@@ -4,6 +4,7 @@
 #include <numeric>
 #include <stdexcept>
 
+// Helper function to compute the average of a vector of integers
 double compute_average(const std::vector<int>& scores) {
     if (scores.empty()) return 0.0;
     return std::accumulate(scores.begin(), scores.end(), 0.0) / scores.size();
@@ -53,7 +54,7 @@ void Student::compute_course_grade() {
     else course_grade = "F";
 }
 
-void Student::compute_grade() {
+void Student::compute_grades() {
     compute_quiz_avg();
     compute_hw_avg();
     compute_course_score();
@@ -109,9 +110,9 @@ std::ostream& operator<<(std::ostream& out, const Student& s) {
     return out;
 }
 
-void Gradebook::compute_grade() {
+void Gradebook::compute_grades() {
     for (auto& student : students) {
-        student.compute_grade();
+        student.compute_grades();
     }
 }
 
@@ -139,4 +140,3 @@ std::ostream& operator<<(std::ostream& out, const Gradebook& b) {
     }
     return out;
 }
-
