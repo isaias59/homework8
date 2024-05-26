@@ -5,6 +5,7 @@
 #include <sstream>
 #include <cctype>
 #include <fstream>
+#include <ranges>
 
 std::string to_lowercase(const std::string& str) {
     std::string lower_str = str;
