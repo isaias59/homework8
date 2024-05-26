@@ -286,9 +286,11 @@ std::ostream& operator<<(std::ostream& out, const Gradebook& b) {
 }
 */
 
-#include "compute_grades.hpp"
 
-void Student::validate() const 
+#include "compute_grades.hpp"
+using namespace std;
+
+void Student::validate() const
 {
     auto validate_scores = [](const std::vector<int>& scores) {
         for (int score : scores) {
@@ -362,34 +364,68 @@ bool Student::operator == (const Student& other) const {
     return last_name == other.last_name && first_name == other.first_name;
 }
 
+//std::istream& operator>>(std::istream& in, Student& s) {
+//    // Read student data from input stream
+//    in >> s.last_name >> s.first_name;
+//    int score;
+//    while (in >> score) {
+//        s.quiz.push_back(score);
+//    }
+//    return in;
+//}
+
 std::istream& operator>>(std::istream& in, Student& s) {
-    // Read student data from input stream
-    in >> s.last_name >> s.first_name;
-    int score;
-    while (in >> score) {
-        s.quiz.push_back(score);
+    std::string keyword;
+    while (in >> keyword) {
+        if (keyword == "Name:") {
+            in >> s.first_name;
+            in >> std::ws;
+            std::getline(in, s.last_name);
+        }
+        else if (keyword == "Quiz:") {
+            int score;
+            while (in >> score) {
+                s.quiz.push_back(score);
+            }
+            in.clear();
+        }
+        else if (keyword == "HW:") {
+            int score;
+            while (in >> score) {
+                s.hw.push_back(score);
+            }
+            in.clear();
+        }
+        else if (keyword == "Final:") {
+            in >> s.final_score;
+        }
+        in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (in.peek() == '\n') break;
     }
     return in;
 }
 
-std::ostream& operator<<(std::ostream& out, const Student& s) 
-{
- out << "Name: " << s.first_name << " " << s.last_name << "\n";
- out << "HW Ave: " << s.hw_avg << "\n";
- out << "QZ Ave: " << s.quiz_avg << "\n";
- out << "Final: " << s.final_score << "\n";
- out << "Total: " << s.course_score << "\n";
- out << "Grade: " << s.course_grade << "\n\n";
- return out;
+
+std::ostream& operator<<(std::ostream& out, const Student& s) {
+    out << std::left << std::setw(8) << "Name:" << s.first_name << " " << s.last_name << "\n"
+        << std::left << std::setw(8) << "HW Ave:" << s.hw_avg << "\n"
+        << std::left << std::setw(8) << "QZ Ave:" << s.quiz_avg << "\n"
+        << std::left << std::setw(8) << "Final:" << s.final_score << "\n"
+        << std::left << std::setw(8) << "Total:" << s.course_score << "\n"
+        << std::left << std::setw(8) << "Grade:" << s.course_grade << "\n\n";
+    return out;
 }
 
+
 void Student::compute_quiz_avg() {
-    int sum = 0;
-    for (int score : quiz) {
-        sum += score;
+    if (quiz.size() > 1) {
+        auto min_it = std::min_element(quiz.begin(), quiz.end());
+        quiz.erase(min_it);
     }
-    quiz_avg = static_cast<double>(sum) / quiz.size();
+    quiz_avg = quiz.empty() ? 0.0 : static_cast<double>(std::accumulate(quiz.begin(), quiz.end(), 0)) / quiz.size();
 }
+
+
 
 void Student::compute_hw_avg() {
     int sum = 0;
