@@ -286,7 +286,7 @@ std::ostream& operator<<(std::ostream& out, const Gradebook& b) {
 }
 */
 
-#include "compute_grades.h"
+#include "compute_grades.hpp"
 #include <numeric>
 #include <algorithm>
 #include <stdexcept>
