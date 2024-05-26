@@ -290,18 +290,10 @@ std::ostream& operator<<(std::ostream& out, const Gradebook& b) {
 
 void Student::validate() const {
     // Check if the student has a valid name and scores
-//    if (last_name.empty() || first_name.empty() || quiz.empty() || hw.empty()) {
-   //     throw std::invalid_argument("Invalid student data");
-   // }
-    auto validate_score = [](int score) {
-    if (score < 0 || score > 100) {
-        throw std::domain_error("Error: invalid percentage " + std::to_string(score));
+    if (last_name.empty() || first_name.empty() || quiz.empty() || hw.empty()) {
+        throw std::invalid_argument("Invalid student data");
     }
-    };
-
-for (int score : quiz) validate_score(score);
-for (int score : hw) validate_score(score);
-validate_score(static_cast<int>(final_score));
+    
 }
 
 void Student::compute_grade() {
