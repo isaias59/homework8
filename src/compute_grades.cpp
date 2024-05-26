@@ -286,163 +286,99 @@ std::ostream& operator<<(std::ostream& out, const Gradebook& b) {
 }
 */
 
+#include "compute_grades.h"
+#include <numeric>
+#include <algorithm>
+#include <stdexcept>
+#include <iomanip>
 
-#include "compute_grades.hpp"
-using namespace std;
+// Function to compute the average of a vector of integers
+double average(const std::vector<int>& scores) {
+    if (scores.empty()) {
+        return 0.0;
+    }
+    int sum = std::accumulate(scores.begin(), scores.end(), 0);
+    return static_cast<double>(sum) / scores.size();
+}
 
-void Student::validate() const
-{
-    auto validate_scores = [](const std::vector<int>& scores) {
-        for (int score : scores) {
-            if (score < 0 || score > 100) {
-                throw std::domain_error("Error: invalid percentage " + std::to_string(score));
-            }
-        }
-        };
-
-    validate_scores(quiz);
-    validate_scores(hw);
-
-    if (final_score < 0 || final_score > 100) {
-        throw std::domain_error("Error: invalid percentage " + std::to_string(final_score));
+void Student::validate() const {
+    if (quiz.empty() || hw.empty()) {
+        throw std::runtime_error("Student must have quiz and homework scores.");
     }
 }
 
+void Student::compute_quiz_avg() {
+    quiz_avg = average(quiz);
+}
 
-void Student::compute_grade() {
+void Student::compute_hw_avg() {
+    hw_avg = average(hw);
+}
+
+void Student::compute_course_score() {
     compute_quiz_avg();
     compute_hw_avg();
-    compute_course_score();
-
-    if (course_score >= 97) {
-        course_grade = "A+";
-    }
-    else if (course_score >= 93) {
+    // Simple example of computing course score
+    course_score = static_cast<int>((quiz_avg * 0.4) + (hw_avg * 0.4) + (final_score * 0.2));
+    if (course_score >= 90) {
         course_grade = "A";
     }
-    else if (course_score >= 90) {
-        course_grade = "A-";
-    }
-    else if (course_score >= 87) {
-        course_grade = "B+";
-    }
-    else if (course_score >= 83) {
+    else if (course_score >= 80) {
         course_grade = "B";
     }
-    else if (course_score >= 80) {
-        course_grade = "B-";
-    }
-    else if (course_score >= 77) {
-        course_grade = "C+";
-    }
-    else if (course_score >= 73) {
+    else if (course_score >= 70) {
         course_grade = "C";
     }
-    else if (course_score >= 70) {
-        course_grade = "C-";
-    }
-    else if (course_score >= 67) {
-        course_grade = "D+";
-    }
-    else if (course_score >= 63) {
-        course_grade = "D";
-    }
     else if (course_score >= 60) {
-        course_grade = "D-";
+        course_grade = "D";
     }
     else {
         course_grade = "F";
     }
 }
 
+void Student::compute_grade() {
+    compute_course_score();
+}
 
 std::strong_ordering Student::operator<=>(const Student& other) const {
-    return std::tie(last_name, first_name) <=> std::tie(other.last_name, other.first_name);
+    return course_score <=> other.course_score;
 }
 
-bool Student::operator == (const Student& other) const {
-    return last_name == other.last_name && first_name == other.first_name;
+bool Student::operator==(const Student& other) const {
+    return course_score == other.course_score;
 }
-
-//std::istream& operator>>(std::istream& in, Student& s) {
-//    // Read student data from input stream
-//    in >> s.last_name >> s.first_name;
-//    int score;
-//    while (in >> score) {
-//        s.quiz.push_back(score);
-//    }
-//    return in;
-//}
 
 std::istream& operator>>(std::istream& in, Student& s) {
-    std::string keyword;
-    while (in >> keyword) {
-        if (keyword == "Name:") {
-            in >> s.first_name;
-            in >> std::ws;
-            std::getline(in, s.last_name);
-        }
-        else if (keyword == "Quiz:") {
-            int score;
-            while (in >> score) {
-                s.quiz.push_back(score);
-            }
-            in.clear();
-        }
-        else if (keyword == "HW:") {
-            int score;
-            while (in >> score) {
-                s.hw.push_back(score);
-            }
-            in.clear();
-        }
-        else if (keyword == "Final:") {
-            in >> s.final_score;
-        }
-        in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        if (in.peek() == '\n') break;
+    in >> s.last_name >> s.first_name;
+    int num_quizzes, num_hw;
+    in >> num_quizzes;
+    s.quiz.resize(num_quizzes);
+    for (int& q : s.quiz) {
+        in >> q;
     }
+    in >> num_hw;
+    s.hw.resize(num_hw);
+    for (int& h : s.hw) {
+        in >> h;
+    }
+    in >> s.final_score;
     return in;
 }
 
-
 std::ostream& operator<<(std::ostream& out, const Student& s) {
-    out << std::left << std::setw(8) << "Name:" << s.first_name << " " << s.last_name << "\n"
-        << std::left << std::setw(8) << "HW Ave:" << s.hw_avg << "\n"
-        << std::left << std::setw(8) << "QZ Ave:" << s.quiz_avg << "\n"
-        << std::left << std::setw(8) << "Final:" << s.final_score << "\n"
-        << std::left << std::setw(8) << "Total:" << s.course_score << "\n"
-        << std::left << std::setw(8) << "Grade:" << s.course_grade << "\n\n";
+    out << s.last_name << ", " << s.first_name << ": "
+        << "Quiz Avg: " << s.quiz_avg << ", "
+        << "HW Avg: " << s.hw_avg << ", "
+        << "Final: " << s.final_score << ", "
+        << "Course Score: " << s.course_score << ", "
+        << "Grade: " << s.course_grade;
     return out;
 }
 
-
-void Student::compute_quiz_avg() {
-    if (quiz.size() > 1) {
-        auto min_it = std::min_element(quiz.begin(), quiz.end());
-        quiz.erase(min_it);
-    }
-    quiz_avg = quiz.empty() ? 0.0 : static_cast<double>(std::accumulate(quiz.begin(), quiz.end(), 0)) / quiz.size();
-}
-
-
-
-void Student::compute_hw_avg() {
-    int sum = 0;
-    for (int score : hw) {
-        sum += score;
-    }
-    hw_avg = static_cast<double>(sum) / hw.size();
-}
-
-void Student::compute_course_score() {
-    // This is just an example. Adjust the weights according to your grading rules.
-    course_score = 0.3 * quiz_avg + 0.4 * hw_avg + 0.3 * final_score;
-}
-
 void Gradebook::compute_grades() {
-    for (Student& s : students) {
-        s.compute_grade();
+    for (auto& student : students) {
+        student.compute_grade();
     }
 }
 
@@ -451,24 +387,24 @@ void Gradebook::sort() {
 }
 
 void Gradebook::validate() const {
-    for (const Student& s : students) {
-        s.validate();
+    for (const auto& student : students) {
+        student.validate();
     }
 }
 
 std::istream& operator>>(std::istream& in, Gradebook& b) {
-    // Read gradebook data from input stream
-    Student s;
-    while (in >> s) {
-        b.students.push_back(s);
+    int num_students;
+    in >> num_students;
+    b.students.resize(num_students);
+    for (auto& student : b.students) {
+        in >> student;
     }
     return in;
 }
 
 std::ostream& operator<<(std::ostream& out, const Gradebook& b) {
-    // Write gradebook data to output stream
-    for (const Student& s : b.students) {
-        out << s << "\n";
+    for (const auto& student : b.students) {
+        out << student << std::endl;
     }
     return out;
 }
