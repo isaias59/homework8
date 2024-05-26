@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "process_numbers.h"
+#include "process_numbers.hpp"
 
 int main()
 {
