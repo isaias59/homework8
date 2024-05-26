@@ -5,11 +5,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 class Student {
 public:
 	void validate() const;
-	void compute_grades();
+	void compute_grade();
 
 	std::strong_ordering operator <=> (const Student& other) const;
 	bool operator == (const Student& other)const;
@@ -34,7 +35,6 @@ private:
 	void compute_quiz_avg();
 	void compute_hw_avg();
 	void compute_course_score();
-	void compute_course_grade();
 
 };
 
