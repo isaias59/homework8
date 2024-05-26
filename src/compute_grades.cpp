@@ -288,22 +288,74 @@ std::ostream& operator<<(std::ostream& out, const Gradebook& b) {
 
 #include "compute_grades.hpp"
 
-void Student::validate() const {
-    // Check if the student has a valid name and scores
-    if (last_name.empty() || first_name.empty() || quiz.empty() || hw.empty()) {
-        throw std::invalid_argument("Invalid student data");
+void Student::validate() const 
+{
+    auto validate_scores = [](const std::vector<int>& scores) {
+        for (int score : scores) {
+            if (score < 0 || score > 100) {
+                throw std::domain_error("Error: invalid percentage " + std::to_string(score));
+            }
+        }
+        };
+
+    validate_scores(quiz);
+    validate_scores(hw);
+
+    if (final_score < 0 || final_score > 100) {
+        throw std::domain_error("Error: invalid percentage " + std::to_string(final_score));
     }
-    
 }
+
 
 void Student::compute_grade() {
     compute_quiz_avg();
     compute_hw_avg();
     compute_course_score();
+
+    if (course_score >= 97) {
+        course_grade = "A+";
+    }
+    else if (course_score >= 93) {
+        course_grade = "A";
+    }
+    else if (course_score >= 90) {
+        course_grade = "A-";
+    }
+    else if (course_score >= 87) {
+        course_grade = "B+";
+    }
+    else if (course_score >= 83) {
+        course_grade = "B";
+    }
+    else if (course_score >= 80) {
+        course_grade = "B-";
+    }
+    else if (course_score >= 77) {
+        course_grade = "C+";
+    }
+    else if (course_score >= 73) {
+        course_grade = "C";
+    }
+    else if (course_score >= 70) {
+        course_grade = "C-";
+    }
+    else if (course_score >= 67) {
+        course_grade = "D+";
+    }
+    else if (course_score >= 63) {
+        course_grade = "D";
+    }
+    else if (course_score >= 60) {
+        course_grade = "D-";
+    }
+    else {
+        course_grade = "F";
+    }
 }
 
-std::strong_ordering Student::operator <=> (const Student& other) const {
-    return course_score <=> other.course_score;
+
+std::strong_ordering Student::operator<=>(const Student& other) const {
+    return std::tie(last_name, first_name) <=> std::tie(other.last_name, other.first_name);
 }
 
 bool Student::operator == (const Student& other) const {
@@ -320,10 +372,15 @@ std::istream& operator>>(std::istream& in, Student& s) {
     return in;
 }
 
-std::ostream& operator<<(std::ostream& out, const Student& s) {
-    // Write student data to output stream
-    out << s.last_name << " " << s.first_name << ": " << s.course_score;
-    return out;
+std::ostream& operator<<(std::ostream& out, const Student& s) 
+{
+ out << "Name: " << s.first_name << " " << s.last_name << "\n";
+ out << "HW Ave: " << s.hw_avg << "\n";
+ out << "QZ Ave: " << s.quiz_avg << "\n";
+ out << "Final: " << s.final_score << "\n";
+ out << "Total: " << s.course_score << "\n";
+ out << "Grade: " << s.course_grade << "\n\n";
+ return out;
 }
 
 void Student::compute_quiz_avg() {
