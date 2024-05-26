@@ -9,7 +9,7 @@
 class Student {
 public:
 	void validate() const;
-	void compute_grade();
+	void compute_grades();
 
 	std::strong_ordering operator <=> (const Student& other) const;
 	bool operator == (const Student& other)const;
@@ -40,7 +40,7 @@ private:
 
 class Gradebook {
 public:
-	void compute_grade();
+	void compute_grades();
 	void sort();
 	void validate()const;
 
