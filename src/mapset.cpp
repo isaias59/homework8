@@ -22,7 +22,7 @@ std::set<std::string> load_stopwords(std::istream& stopwords) {
     });
 
     return stopwords_set;
-
+}
 
 std::map<std::string, int> count_words(std::istream& document, const std::set<std::string>& stopwords) {
     std::map<std::string, int> word_counts;
@@ -36,7 +36,7 @@ std::map<std::string, int> count_words(std::istream& document, const std::set<st
     });
 
     return word_counts;
-
+}
 void output_word_counts(const std::map<std::string, int>& word_counts, std::ostream& output) {
     for (const auto& [word, count] : word_counts) {
         output << word << " " << count << "\n";
