@@ -5,9 +5,7 @@ using namespace std;
 
 int main()
 {
-	cout << "\nHey";
 	ifstream gradebook{ "gradebook.txt" };
-	cout << "\nHey";
 
 	Gradebook b;
 	gradebook >> b;
