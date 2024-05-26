@@ -1,10 +1,9 @@
-#include "compute_grades.h"
+#include "compute_grades.hpp"
 #include <algorithm>
 #include <iomanip>
 #include <numeric>
 #include <stdexcept>
 
-// Helper function to compute the average of a vector of integers
 double compute_average(const std::vector<int>& scores) {
     if (scores.empty()) return 0.0;
     return std::accumulate(scores.begin(), scores.end(), 0.0) / scores.size();
