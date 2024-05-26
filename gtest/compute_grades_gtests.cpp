@@ -21,7 +21,7 @@ std::string process_student(const std::string& input) {
     std::istringstream input_stream(input);
     input_stream >> student;
 
-    student.compute_grades(); 
+    student.compute_grades();
 
     std::ostringstream output_stream;
     output_stream << student;
