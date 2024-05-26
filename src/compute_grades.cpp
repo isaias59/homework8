@@ -53,7 +53,7 @@ void Student::compute_course_grade() {
     else course_grade = "F";
 }
 
-void Student::compute_grades() {
+void Student::compute_grade() {
     compute_quiz_avg();
     compute_hw_avg();
     compute_course_score();
@@ -109,9 +109,9 @@ std::ostream& operator<<(std::ostream& out, const Student& s) {
     return out;
 }
 
-void Gradebook::compute_grades() {
+void Gradebook::compute_grade() {
     for (auto& student : students) {
-        student.compute_grades();
+        student.compute_grade();
     }
 }
 
