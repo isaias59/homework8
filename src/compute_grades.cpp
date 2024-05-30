@@ -6,10 +6,20 @@
 using namespace std;
 
 void Student::validate() const {
-    if (last_name == "Name" || first_name == "Missing" || quiz.empty() || hw.empty()) {
-        throw std::runtime_error("Student data is incomplete or invalid.");
+    if (last_name.empty() || first_name.empty()) {
+        throw std::runtime_error("Student name is incomplete.");
+    }
+    if (quiz.empty()) {
+        throw std::runtime_error("Quiz scores are missing.");
+    }
+    if (hw.empty()) {
+        throw std::runtime_error("Homework scores are missing.");
+    }
+    if (final_score < 0 || final_score > 100) {
+        throw std::runtime_error("Final score is out of valid range.");
     }
 }
+
 
 
 void Student::compute_quiz_avg() {
