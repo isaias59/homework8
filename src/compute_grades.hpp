@@ -2,13 +2,10 @@
 #define COMPUTER_GRADES_HPP
 
 #include <compare>
-#include <iostream>
+#include <iosfwd>
 #include <string>
 #include <vector>
 #include<iomanip>
-#include <iosfwd>
-#include <string>
-
 
 class Student {
 public:
