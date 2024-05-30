@@ -77,24 +77,27 @@ std::istream& operator>>(std::istream& in, Student& s) {
     string dummy;
     in >> dummy >> s.last_name >> s.first_name;
 
-    in >> dummy; // Quiz
+    in >> dummy; // Read the "Quiz" label
+    s.quiz.clear(); // Clear any existing quiz scores
     int quiz_score;
-    while (in >> quiz_score) {
+    while (in >> quiz_score) { // Read quiz scores
         s.quiz.push_back(quiz_score);
-        if (in.peek() == '\n') break;
+        if (in.peek() == '\n' || in.peek() == 'H') break; // Stop at new line or HW label
     }
 
-    in >> dummy; // HW
+    in >> dummy; // Read the "HW" label
+    s.hw.clear(); // Clear any existing homework scores
     int hw_score;
-    while (in >> hw_score) {
+    while (in >> hw_score) { // Read homework scores
         s.hw.push_back(hw_score);
-        if (in.peek() == '\n') break;
+        if (in.peek() == '\n' || in.peek() == 'F') break; // Stop at new line or Final label
     }
 
-    in >> dummy >> s.final_score; // Final
+    in >> dummy >> s.final_score; // Read the "Final" label and the final score
 
     return in;
 }
+
 
 std::ostream& operator<<(std::ostream& out, const Student& s) {
     out << s.last_name << ", " << s.first_name << " - "
