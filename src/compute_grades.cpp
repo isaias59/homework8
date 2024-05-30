@@ -6,10 +6,11 @@
 using namespace std;
 
 void Student::validate() const {
-    if (last_name.empty() || first_name.empty() || quiz.empty() || hw.empty()) {
-        throw runtime_error("Student data is incomplete or invalid.");
+    if (last_name == "Name" || first_name == "Missing" || quiz.empty() || hw.empty()) {
+        throw std::runtime_error("Student data is incomplete or invalid.");
     }
 }
+
 
 void Student::compute_quiz_avg() {
     if (!quiz.empty()) {
