@@ -1,4 +1,4 @@
-#include "compute_grades.h"
+#include "compute_grades.hpp"
 #include <algorithm>
 #include <iostream>
 #include <numeric>
