@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 #include<iomanip>
+#include <iosfwd>
+#include <string>
+
 
 class Student {
 public:
