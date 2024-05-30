@@ -1,4 +1,4 @@
-#include "compute_grades.hpp"
+#include "compute_grades.h"
 #include <algorithm>
 #include <iostream>
 #include <numeric>
@@ -100,11 +100,12 @@ std::istream& operator>>(std::istream& in, Student& s) {
 
 
 std::ostream& operator<<(std::ostream& out, const Student& s) {
-    out << s.last_name << ", " << s.first_name << " - "
-        << "Quizzes: " << s.quiz_avg << ", "
-        << "HW: " << s.hw_avg << ", "
-        << "Final Score: " << s.course_score << ", "
-        << "Grade: " << s.course_grade;
+    out << "Name: " << s.first_name << " " << s.last_name << "\n";
+    out << "HW Ave: " << s.hw_avg << "\n";
+    out << "QZ Ave: " << s.quiz_avg << "\n";
+    out << "Final: " << s.final_score << "\n";
+    out << "Total: " << s.course_score << "\n";
+    out << "Grade: " << s.course_grade << "\n";
     return out;
 }
 
